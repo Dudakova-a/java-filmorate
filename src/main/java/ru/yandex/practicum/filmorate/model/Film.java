@@ -1,15 +1,16 @@
 package ru.yandex.practicum.filmorate.model;
 
 import jakarta.validation.constraints.*;
-
 import lombok.Data;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Класс, представляющий фильм в системе.
- * Содержит основные характеристики фильма и используется для хранения и передачи данных.
+ * Содержит основные характеристики фильма и информацию о лайках.
  */
 @Data
 @Builder
@@ -27,4 +28,6 @@ public class Film {
 
     @Positive(message = "Продолжительность должна быть положительным числом")
     private Integer duration;      // Продолжительность фильма в минутах
+
+    private final Set<Integer> likes = new HashSet<>();
 }
