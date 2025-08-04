@@ -1,7 +1,7 @@
 # java-filmorate
 Template repository for Filmorate project.
 
-![ER Diagram](path/to/er_filmorate.png)
+![ER Diagram](path/to/github.com/Dudakova-a/java-filmorate/blob/add-database/er_filmorate.png))
 
 Описание таблиц базы данных Filmorate
 1. Пользователи (users)
