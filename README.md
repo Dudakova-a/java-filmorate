@@ -1,6 +1,8 @@
 # java-filmorate
 Template repository for Filmorate project.
 
+![ER Diagram](path/to/ER_filmorate.png)
+
 Описание таблиц базы данных Filmorate
 1. Пользователи (users)
 user_id - уникальный идентификатор
