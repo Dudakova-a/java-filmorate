@@ -13,7 +13,9 @@ import ru.yandex.practicum.filmorate.service.UserService;
 import java.util.List;
 
 
- /** Контроллер для обработки HTTP-запросов, связанных с пользователями.**/
+ /**
+  * Контроллер для обработки HTTP-запросов, связанных с пользователями.
+  * **/
 @Slf4j
 @RestController
 @RequestMapping("/users")
