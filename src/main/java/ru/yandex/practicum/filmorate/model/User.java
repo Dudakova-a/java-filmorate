@@ -2,17 +2,16 @@ package ru.yandex.practicum.filmorate.model;
 
 
 import jakarta.validation.constraints.*;
-
 import lombok.Data;
 import lombok.Builder;
+import ru.yandex.practicum.filmorate.exception.FriendNotFoundException;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Класс, представляющий пользователя в системе.
- * Содержит основные данные пользователя и используется для хранения и передачи информации о пользователях.
+ * Класс содержит основные данные пользователя и используется для хранения и передачи информации о пользователях.
  */
 @Data
 @Builder
@@ -32,6 +31,24 @@ public class User {
     @PastOrPresent(message = "Дата рождения не может быть в будущем")
     private LocalDate birthday; // Дата рождения пользователя
 
-    private final Set<Integer> friends = new HashSet<>();
-}
+    @Builder.Default
+    private Map<Integer, FriendshipStatus> friends = new HashMap<>();
 
+    public void addFriend(int friendId, FriendshipStatus status) {
+        if (friends == null) {
+            friends = new HashMap<>();
+        }
+        friends.put(friendId, status);
+    }
+
+    public void removeFriend(int friendId) {
+        friends.remove(friendId);
+    }
+
+    public void updateFriendshipStatus(int friendId, FriendshipStatus status) {
+        if (!friends.containsKey(friendId)) {
+            throw new FriendNotFoundException("Друг с ID " + friendId + " не найден");
+        }
+        friends.put(friendId, status);
+    }
+}

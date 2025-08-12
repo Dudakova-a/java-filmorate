@@ -1,78 +1,99 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.repository.FriendStorage;
+import ru.yandex.practicum.filmorate.repository.FriendshipStatusStorage;
+import ru.yandex.practicum.filmorate.repository.UserStorage;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
+/**
+ * Сервисный класс для работы с пользователями.
+ * Обеспечивает бизнес-логику приложения для операций с пользователями и их дружескими связями.
+ */
 @Service
+@RequiredArgsConstructor
 public class UserService {
+    private final FriendStorage friendStorage;
     private final UserStorage userStorage;
+    private final FriendshipStatusStorage statusStorage;
 
-    @Autowired
-    public UserService(UserStorage userStorage) {
-        this.userStorage = userStorage;
+    /**
+     * Получает список всех пользователей.
+     *
+     * @return список объектов {@link User}
+     */
+    public List<User> findAll() {
+        return userStorage.findAll();
     }
 
-    public void addFriend(int userId, int friendId) {
-        User user = getUserById(userId);
-        User friend = getUserById(friendId);
-
-        user.getFriends().add(friendId);
-        friend.getFriends().add(userId);
+    /**
+     * Находит пользователя по его идентификатору.
+     *
+     * @param id идентификатор пользователя
+     * @return найденный объект {@link User}
+     * @throws NotFoundException если пользователь с указанным id не найден
+     */
+    public User findById(Integer id) {
+        return userStorage.findById(id)
+                .orElseThrow(() -> new NotFoundException("User not found with id: " + id));
     }
 
-    public void removeFriend(int userId, int friendId) {
-        User user = getUserById(userId);
-        User friend = getUserById(friendId);
-
-        user.getFriends().remove(friendId);
-        friend.getFriends().remove(userId);
-    }
-
-    public List<User> getFriends(int userId) {
-        User user = getUserById(userId);
-        return user.getFriends().stream()
-                .map(this::getUserById)
-                .collect(Collectors.toList());
-    }
-
-    public List<User> getCommonFriends(int userId, int otherUserId) {
-        User user = getUserById(userId);
-        User otherUser = getUserById(otherUserId);
-
-        Set<Integer> commonFriendIds = new HashSet<>(user.getFriends());
-        commonFriendIds.retainAll(otherUser.getFriends());
-
-        return commonFriendIds.stream()
-                .map(this::getUserById)
-                .collect(Collectors.toList());
-    }
-
-    public User getUserById(int id) {
-        User user = userStorage.getUserById(id);
-        if (user == null) {
-            throw new NotFoundException("Пользователь с id=" + id + " не найден");
+    /**
+     * Создает нового пользователя.
+     * Если имя пользователя не указано, используется логин.
+     *
+     * @param user объект пользователя для создания
+     * @return созданный объект {@link User} с присвоенным идентификатором
+     */
+    public User create(User user) {
+        // Проверяем, что пользователь новый (без ID)
+        if (user.getId() != null) {
+            throw new IllegalArgumentException("New user must not have an ID");
         }
-        return user;
+
+        // Устанавливаем имя, если оно пустое
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
+
+        // Проверяем уникальность email и login
+        validateUserUniqueness(user);
+
+        return userStorage.save(user);
     }
 
-    public List<User> getAllUsers() {
-        return userStorage.getAllUsers();
+    private void validateUserUniqueness(User user) {
+        if (userStorage.existsByEmail(user.getEmail())) {
+            throw new ValidationException("Email already exists");
+        }
+        if (userStorage.existsById(user.getId())) {
+            throw new ValidationException("Id already exists");
+        }
     }
 
-    public User addUser(User user) {
-        return userStorage.addUser(user);
+    /**
+     * Обновляет существующего пользователя.
+     *
+     * @param user объект пользователя с обновленными данными
+     * @return обновленный объект {@link User}
+     * @throws NotFoundException если пользователь с указанным id не найден
+     */
+    public User update(User user) {
+        findById(user.getId()); // Проверка существования пользователя
+        return userStorage.update(user);
     }
 
-    public User updateUser(User user) {
-        //getUserById(user.getId());
-        return userStorage.updateUser(user);
+    /**
+     * Удаляет пользователя по идентификатору.
+     *
+     * @param id идентификатор пользователя для удаления
+     */
+    public void delete(Integer id) {
+        userStorage.delete(id);
     }
 }

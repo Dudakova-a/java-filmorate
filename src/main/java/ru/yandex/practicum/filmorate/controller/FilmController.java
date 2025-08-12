@@ -1,13 +1,17 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
-import jakarta.validation.Valid;
-
 import java.util.List;
+
+
+
+ /** Контроллер для обработки HTTP-запросов, связанных с фильмами.**/
+
 
 @Slf4j
 @RestController
@@ -20,32 +24,32 @@ public class FilmController {
     }
 
     @GetMapping
-    public List<Film> getAllFilms() {
-        return filmService.getAllFilms();
+    public List<Film> findAll() {
+        return filmService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Film getFilmById(@PathVariable int id) {
-        return filmService.getFilmById(id);
+    public Film findById(@PathVariable Integer id) {
+        return filmService.findById(id);
     }
 
     @PostMapping
     public Film addFilm(@Valid @RequestBody Film film) {
-        return filmService.addFilm(film);
+        return filmService.create(film);
     }
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
-        return filmService.updateFilm(film);
+        return filmService.update(film);
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public void addLike(@PathVariable int id, @PathVariable int userId) {
+    public void addLike(@PathVariable Integer id, @PathVariable Integer userId) {
         filmService.addLike(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
-    public void removeLike(@PathVariable int id, @PathVariable int userId) {
+    public void removeLike(@PathVariable Integer id, @PathVariable Integer userId) {
         filmService.removeLike(id, userId);
     }
 
