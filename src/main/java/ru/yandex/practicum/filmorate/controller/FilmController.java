@@ -9,10 +9,9 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 import java.util.List;
 
 
-
- /**
-  * Контроллер для обработки HTTP-запросов, связанных с фильмами.
-  * **/
+/**
+ * Контроллер для обработки HTTP-запросов, связанных с фильмами.
+ **/
 
 
 @Slf4j

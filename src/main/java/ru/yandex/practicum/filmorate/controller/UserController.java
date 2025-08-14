@@ -14,9 +14,9 @@ import ru.yandex.practicum.filmorate.service.UserService;
 import java.util.List;
 
 
- /**
-  * Контроллер для обработки HTTP-запросов, связанных с пользователями.
-  * **/
+/**
+ * Контроллер для обработки HTTP-запросов, связанных с пользователями.
+ **/
 @Slf4j
 @RestController
 @RequestMapping("/users")
@@ -62,10 +62,10 @@ public class UserController {
         return friendService.getFriends(id);
     }
 
-     @GetMapping("/friendship-statuses")
-     public List<FriendshipStatus> getAllFriendshipStatuses() {
-         return friendshipStatusService.getAllFriendshipStatuses();
-     }
+    @GetMapping("/friendship-statuses")
+    public List<FriendshipStatus> getAllFriendshipStatuses() {
+        return friendshipStatusService.getAllFriendshipStatuses();
+    }
 
     @GetMapping("/{id}/friends/common/{otherId}")
     public List<User> getCommonFriends(@PathVariable Integer id,
