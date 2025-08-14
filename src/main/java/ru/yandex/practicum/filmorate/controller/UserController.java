@@ -6,7 +6,6 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.FriendshipStatus;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.repository.FriendshipStatusStorage;
 import ru.yandex.practicum.filmorate.service.FriendService;
 import ru.yandex.practicum.filmorate.service.FriendshipStatusService;
 import ru.yandex.practicum.filmorate.service.UserService;
