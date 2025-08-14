@@ -1,12 +1,11 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /** Класс представляет жанр фильма.**/
 
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
 @Getter
 @Setter
 public class Genre {

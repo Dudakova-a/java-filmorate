@@ -9,6 +9,7 @@ import lombok.*;
 @Data
 @Builder
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
+
 public class Mpa {
     private Integer id;              // Уникальный идентификатор рейтинга
     private String code;         // Краткий код рейтинга

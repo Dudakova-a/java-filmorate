@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.FriendshipStatus;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.repository.FriendshipStatusStorage;
 import ru.yandex.practicum.filmorate.service.FriendService;
+import ru.yandex.practicum.filmorate.service.FriendshipStatusService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final FriendshipStatusStorage statusStorage;
+    private final FriendshipStatusService friendshipStatusService;
     private final FriendService friendService;
 
     // Основные операции с пользователями
@@ -61,10 +62,10 @@ public class UserController {
         return friendService.getFriends(id);
     }
 
-    @GetMapping("/friendship-statuses")
-    public List<FriendshipStatus> getAllFriendshipStatuses() {
-        return statusStorage.findAll();
-    }
+     @GetMapping("/friendship-statuses")
+     public List<FriendshipStatus> getAllFriendshipStatuses() {
+         return friendshipStatusService.getAllFriendshipStatuses();
+     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
     public List<User> getCommonFriends(@PathVariable Integer id,
