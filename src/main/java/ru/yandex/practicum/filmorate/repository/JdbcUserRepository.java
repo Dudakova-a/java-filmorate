@@ -23,7 +23,6 @@ import java.util.*;
 @RequiredArgsConstructor
 public class JdbcUserRepository implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
-    private final FriendshipStatusStorage statusStorage;
 
     @Override
     public List<User> findAll() {
@@ -55,7 +54,7 @@ public class JdbcUserRepository implements UserStorage {
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getLogin());
             ps.setString(3, user.getName());
-            ps.setDate(4, java.sql.Date.valueOf(user.getBirthday()));  // Используем java.sql.Date
+            ps.setDate(4, java.sql.Date.valueOf(user.getBirthday()));
             return ps;
         }, keyHolder);
 
@@ -82,9 +81,7 @@ public class JdbcUserRepository implements UserStorage {
 
     @Override
     public void delete(Integer id) {
-        // Сначала удаляем связи дружбы
         jdbcTemplate.update("DELETE FROM friendship WHERE user_id = ? OR friend_id = ?", id, id);
-        // Затем удаляем пользователя
         jdbcTemplate.update("DELETE FROM users WHERE id = ?", id);
     }
 
@@ -95,32 +92,25 @@ public class JdbcUserRepository implements UserStorage {
                 .login(rs.getString("login"))
                 .name(rs.getString("name"))
                 .birthday(rs.getDate("birthday").toLocalDate())
+                .friends(new HashMap<>())
                 .build();
     }
 
     private void loadFriends(User user) {
         if (user == null || user.getId() == null) return;
 
-        String sql = "SELECT f.friend_id, fs.name as status_name " +
+        String sql = "SELECT f.friend_id, fs.name as status_name, fs.id as status_id " +
                 "FROM friendship f " +
                 "JOIN friendship_status fs ON f.status_id = fs.id " +
                 "WHERE f.user_id = ?";
 
-        if (user.getFriends() == null) {
-            user.setFriends(new HashMap<>());
-        } else {
-            user.getFriends().clear();
-        }
-
         jdbcTemplate.query(sql, (rs, rowNum) -> {
             int friendId = rs.getInt("friend_id");
-            String statusName = rs.getString("status_name");
-
-            if (!rs.wasNull() && statusName != null) {
-                FriendshipStatus status = statusStorage.findByName(statusName)
-                        .orElseThrow(() -> new IllegalStateException("Status not found: " + statusName));
-                user.addFriend(friendId, status);
-            }
+            FriendshipStatus status = new FriendshipStatus(
+                    rs.getInt("status_id"),
+                    rs.getString("status_name")
+            );
+            user.addFriend(friendId, status);
             return null;
         }, user.getId());
     }

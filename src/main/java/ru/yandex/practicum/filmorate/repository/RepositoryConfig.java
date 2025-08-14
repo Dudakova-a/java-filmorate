@@ -12,20 +12,20 @@ public class RepositoryConfig {
 
     @Bean
     public FilmStorage filmStorage(JdbcTemplate jdbcTemplate,
-                                         GenreStorage genreStorage,
-                                         MpaStorage mpaStorage) {
-        return new JdbcFilmRepository(jdbcTemplate, genreStorage, mpaStorage);
+                                   GenreStorage genreStorage,
+                                   MpaStorage mpaStorage) {
+        return new JdbcFilmRepository(jdbcTemplate);
     }
 
     @Bean
     public UserStorage userStorage(JdbcTemplate jdbcTemplate, FriendshipStatusStorage statusStorage) {
-        return new JdbcUserRepository(jdbcTemplate, statusStorage);
+        return new JdbcUserRepository(jdbcTemplate);
     }
 
     @Bean
     public FriendStorage friendStorage(JdbcTemplate jdbcTemplate,
-                                             FriendshipStatusStorage statusStorage,
-                                             UserStorage userStorage) {
-        return new JdbcFriendRepository(jdbcTemplate, statusStorage, userStorage);
+                                       FriendshipStatusStorage statusStorage,
+                                       UserStorage userStorage) {
+        return new JdbcFriendRepository(jdbcTemplate);
     }
 }
