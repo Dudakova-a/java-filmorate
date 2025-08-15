@@ -62,7 +62,7 @@ public class JdbcFilmRepository implements FilmStorage {
         try {
             Film film = jdbcTemplate.queryForObject(filmSql, this::mapRowToFilm, id);
 
-            String genresSql = "SELECT DISTINCT g.* FROM film_genres fg JOIN genres g ON fg.genre_id = g.id WHERE fg.film_id = ? ORDER BY g.id";
+            String genresSql = "SELECT g.* FROM film_genres fg JOIN genres g ON fg.genre_id = g.id WHERE fg.film_id = ? ORDER BY g.id";
             Set<Genre> genres = new LinkedHashSet<>(jdbcTemplate.query(genresSql,
                     (rs, rowNum) -> new Genre(rs.getInt("id"), rs.getString("name")),
                     id));
