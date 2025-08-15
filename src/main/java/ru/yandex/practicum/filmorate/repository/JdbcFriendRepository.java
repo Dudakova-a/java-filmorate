@@ -153,13 +153,27 @@ public class JdbcFriendRepository implements FriendStorage {
 
     @Override
     public List<User> getCommonFriends(Integer userId, Integer otherId) {
-        String sql = "SELECT u.* FROM users u " +
-                "JOIN friendship f1 ON u.id = f1.friend_id AND f1.user_id = ? " +
-                "JOIN friendship f2 ON u.id = f2.friend_id AND f2.user_id = ? " +
-                "WHERE EXISTS (SELECT 1 FROM friendship_status fs WHERE fs.id = f1.status_id AND fs.name = 'CONFIRMED') " +
-                "AND EXISTS (SELECT 1 FROM friendship_status fs WHERE fs.id = f2.status_id AND fs.name = 'CONFIRMED')";
+        // 1. Получаем ID подтвержденного статуса один раз
+        Integer confirmedStatusId = jdbcTemplate.queryForObject(
+                "SELECT id FROM friendship_status WHERE name = 'CONFIRMED'",
+                Integer.class
+        );
 
-        return jdbcTemplate.query(sql, USER_MAPPER, userId, otherId);
+        // 2. Оптимизированный SQL-запрос с явным указанием статуса
+        String sql = "SELECT DISTINCT u.* FROM users u " +
+                "JOIN friendship f1 ON u.id = f1.friend_id " +
+                "JOIN friendship f2 ON u.id = f2.friend_id " +
+                "WHERE f1.user_id = ? AND f1.status_id = ? " +
+                "AND f2.user_id = ? AND f2.status_id = ?";
+
+        // 3. Логирование для отладки
+        log.debug("Finding common friends between {} and {} with status {}",
+                userId, otherId, confirmedStatusId);
+
+        // 4. Выполнение запроса
+        return jdbcTemplate.query(sql, USER_MAPPER,
+                userId, confirmedStatusId,
+                otherId, confirmedStatusId);
     }
 
     @Override

@@ -40,7 +40,7 @@ public class JdbcFilmRepository implements FilmStorage {
                 .map(f -> String.valueOf(f.getId()))
                 .collect(Collectors.joining(","));
 
-        String sql = "SELECT fg.film_id, g.* FROM film_genres fg JOIN genres g ON fg.genre_id = g.id " +
+        String sql = "SELECT DISTINCT fg.film_id, g.* FROM film_genres fg JOIN genres g ON fg.genre_id = g.id " +
                 "WHERE fg.film_id IN (" + inClause + ") ORDER BY fg.film_id, g.id";
 
         Map<Integer, Set<Genre>> genresByFilmId = new HashMap<>();
