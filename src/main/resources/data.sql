@@ -64,6 +64,3 @@ MERGE INTO friendship (user_id, friend_id, status_id) VALUES
 (5, 4, 2),  -- Обратная связь
 (2, 4, 1);  -- Мария отправила заявку Елене (неподтверждённая)
 
--- Сброс sequence для автоинкремента (чтобы новые записи начинались с правильного ID)
-ALTER TABLE users ALTER COLUMN id RESTART WITH 16;
-ALTER TABLE films ALTER COLUMN id RESTART WITH 17;
