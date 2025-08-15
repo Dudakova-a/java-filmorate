@@ -40,7 +40,7 @@ public class JdbcFilmRepository implements FilmStorage {
                 .map(f -> String.valueOf(f.getId()))
                 .collect(Collectors.joining(","));
 
-        String sql = "SELECT DISTINCT fg.film_id, g.* FROM film_genres fg JOIN genres g ON fg.genre_id = g.id " +
+        String sql = "SELECT fg.film_id, g.* FROM film_genres fg JOIN genres g ON fg.genre_id = g.id " +
                 "WHERE fg.film_id IN (" + inClause + ") ORDER BY fg.film_id, g.id";
 
         Map<Integer, Set<Genre>> genresByFilmId = new HashMap<>();
@@ -96,8 +96,13 @@ public class JdbcFilmRepository implements FilmStorage {
         film.setId(filmId);
 
         if (film.getGenres() != null && !film.getGenres().isEmpty()) {
+            // Убираем дубликаты жанров через Set<Genre> (сравниваем по ID)
+            Set<Genre> uniqueGenres = film.getGenres().stream()
+                    .collect(Collectors.toCollection(() ->
+                            new TreeSet<>(Comparator.comparingInt(Genre::getId))));
+
             String sql = "INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)";
-            jdbcTemplate.batchUpdate(sql, film.getGenres().stream()
+            jdbcTemplate.batchUpdate(sql, uniqueGenres.stream()
                     .map(genre -> new Object[]{filmId, genre.getId()})
                     .collect(Collectors.toList()));
         }

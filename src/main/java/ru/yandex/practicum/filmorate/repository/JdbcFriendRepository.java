@@ -115,10 +115,9 @@ public class JdbcFriendRepository implements FriendStorage {
 
     @Override
     public List<User> findCommonFriends(Integer userId, Integer otherId) {
-        String sql = "SELECT u.* FROM users u " +
-                "JOIN friendship f1 ON u.id = f1.friend_id AND f1.user_id = ? " +
-                "JOIN friendship f2 ON u.id = f2.friend_id AND f2.user_id = ? " +
-                "JOIN friendship_status fs ON f1.status_id = fs.id AND fs.name = 'CONFIRMED'";
+        final String sql = "SELECT * FROM users u, FRIENDSHIP f, FRIENDSHIP o "
+                + "where u.id = f.FRIEND_ID " +
+                " and u.id = o.FRIEND_ID and f.USER_ID = ? and o.user_id = ?";
 
         return jdbcTemplate.query(sql, USER_MAPPER, userId, otherId);
     }
