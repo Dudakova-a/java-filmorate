@@ -1,0 +1,31 @@
+
+-- Инициализация возрастных рейтингов MPA
+MERGE INTO mpa_rating (id, code, description) VALUES
+(1, 'G', 'Нет возрастных ограничений'),
+(2, 'PG', 'Детям рекомендуется смотреть с родителями'),
+(3, 'PG-13', 'Детям до 13 лет просмотр не желателен'),
+(4, 'R', 'Лицам до 17 лет только с взрослым'),
+(5, 'NC-17', 'Лицам до 18 лет просмотр запрещён');
+
+-- Инициализация жанров
+MERGE INTO GENRES (id, name) VALUES
+(1, 'Комедия'),
+(2, 'Драма'),
+(3, 'Мультфильм'),
+(4, 'Триллер'),
+(5, 'Документальный'),
+(6, 'Боевик');
+
+MERGE INTO friendship_status (id, name) VALUES
+(1, 'PENDING'),
+(2, 'CONFIRMED');
+
+-- Добавление тестовых пользователей
+MERGE INTO users (id, email, login, name, birthday) VALUES
+                                                        (1, 'user1@example.com', 'user1', 'Иван Иванов', '1990-01-15'),
+                                                        (2, 'user2@example.com', 'user2', 'Мария Петрова', '1995-05-20'),
+                                                        (3, 'user3@example.com', 'user3', 'Алексей Сидоров', '1985-11-30'),
+                                                        (4, 'user4@example.com', 'user4', 'Елена Васильева', '1992-03-10'),
+                                                        (5, 'user5@example.com', 'user5', 'Дмитрий Николаев', '1988-07-25');
+
+ALTER TABLE users ALTER COLUMN id RESTART WITH 16;
