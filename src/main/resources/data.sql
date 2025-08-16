@@ -28,3 +28,4 @@ MERGE INTO users (id, email, login, name, birthday) VALUES
                                                         (4, 'user4@example.com', 'user4', 'Елена Васильева', '1992-03-10'),
                                                         (5, 'user5@example.com', 'user5', 'Дмитрий Николаев', '1988-07-25');
 
+ALTER TABLE users ALTER COLUMN id RESTART WITH 16;
