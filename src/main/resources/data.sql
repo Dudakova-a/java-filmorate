@@ -19,3 +19,12 @@ MERGE INTO GENRES (id, name) VALUES
 MERGE INTO friendship_status (id, name) VALUES
 (1, 'PENDING'),
 (2, 'CONFIRMED');
+
+-- Добавление тестовых пользователей
+MERGE INTO users (id, email, login, name, birthday) VALUES
+                                                        (1, 'user1@example.com', 'user1', 'Иван Иванов', '1990-01-15'),
+                                                        (2, 'user2@example.com', 'user2', 'Мария Петрова', '1995-05-20'),
+                                                        (3, 'user3@example.com', 'user3', 'Алексей Сидоров', '1985-11-30'),
+                                                        (4, 'user4@example.com', 'user4', 'Елена Васильева', '1992-03-10'),
+                                                        (5, 'user5@example.com', 'user5', 'Дмитрий Николаев', '1988-07-25');
+
